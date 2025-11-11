@@ -47,6 +47,7 @@ struct SubmitView: View {
 
         case "link":
             button
+                .buttonStyle(.borderless)
 
         default:
             FallbackTriggerView()

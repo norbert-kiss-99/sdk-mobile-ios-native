@@ -39,6 +39,8 @@ public struct InputWidget: Decodable, Equatable {
     public let label: String
     public let value: String?
     public let readonly: Bool
+    
+    public let render: Render?
 
     public let autocomplete: String?
     public let inputmode: String?
@@ -50,6 +52,10 @@ public struct InputWidget: Decodable, Equatable {
         public let maxLength: Int?
         public let regex: String?
         public let required: Bool
+    }
+    
+    public struct Render: Decodable, Equatable {
+        public let autocompleteHint: String?
     }
 }
 
@@ -180,6 +186,199 @@ public struct DateWidget: Decodable, Equatable {
     }
 }
 
+public struct PasskeyLoginWidget: Decodable, Equatable {
+    public let id: String
+    public let label: String
+    public let render: Render?
+    
+    public let assertionOptions: AssertionOptions
+
+    public struct Render: Decodable, Equatable {
+        public let type: String
+        public let hint: Hint?
+
+        public struct Hint: Decodable, Equatable {
+            public let variant: String?
+        }
+    }
+    
+    public struct AssertionOptions: Decodable, Equatable {
+        public let allowCredentials: [AllowCredential]
+        public let challenge: String
+        public let userVerification: String
+        public let rpId: String
+        public let timeout: Int
+        
+        public struct AllowCredential: Decodable, Equatable {
+            public let type: String
+            public let id: String
+            public let transports: [String]
+        }
+    }
+}
+
+public struct PasskeyEnrollWidget: Decodable, Equatable {
+    public let id: String
+    public let label: String
+    public let render: Render?
+    
+    public let enrollOptions: EnrollOptions
+
+    public struct Render: Decodable, Equatable {
+        public let type: String
+        public let hint: Hint?
+        public let notification: Notification?
+
+        public struct Hint: Decodable, Equatable {
+            public let variant: String?
+        }
+        
+        public struct Notification: Decodable, Equatable {
+            public let cancelled: String?
+        }
+    }
+    
+    public struct EnrollOptions: Decodable, Equatable {
+        public let rp: Rp
+        public let user: User
+        public let challenge: String
+        public let pubKeyCredParams: [PubKeyCredParam]
+        public let excludeCredentials: [ExcludeCredential]
+        public let authenticatorSelection: AuthenticatorSelection
+        public let attestation: String
+        
+        public struct Rp: Decodable, Equatable {
+            public let id: String
+            public let name: String
+        }
+        
+        public struct User: Decodable, Equatable {
+            public let id: String
+            public let name: String
+            public let displayName: String
+        }
+        
+        public struct PubKeyCredParam: Decodable, Equatable {
+            public let type: String
+            public let alg: Int
+        }
+            
+        public struct AuthenticatorSelection: Decodable, Equatable {
+            public let authenticatorAttachment: String
+            public let requireResidentKey: Bool
+            public let residentKey: String
+            public let userVerification: String
+        }
+        
+        public struct ExcludeCredential: Decodable, Equatable {
+            public let type: String
+            public let id: String
+            public let transports: [String]
+        }
+    }
+}
+
+public struct WebauthnLoginWidget: Decodable, Equatable {
+    public let id: String
+    public let label: String
+    public let render: Render?
+    
+    public let authenticatorType: String
+    
+    public let assertionOptions: AssertionOptions
+
+    public struct Render: Decodable, Equatable {
+        public let type: String
+        public let hint: Hint?
+        public let notification: Notification?
+
+        public struct Hint: Decodable, Equatable {
+            public let variant: String?
+        }
+        
+        public struct Notification: Decodable, Equatable {
+            public let cancelled: String?
+        }
+    }
+    
+    public struct AssertionOptions: Decodable, Equatable {
+        public let allowCredentials: [AllowCredential]
+        public let challenge: String
+        public let userVerification: String
+        public let rpId: String
+        public let timeout: Int
+        
+        public struct AllowCredential: Decodable, Equatable {
+            public let type: String
+            public let id: String
+            public let transports: [String]
+        }
+    }
+}
+
+public struct WebauthnEnrollWidget: Decodable, Equatable {
+    public let id: String
+    public let label: String
+    public let render: Render?
+    
+    public let authenticatorType: String
+    
+    public let enrollOptions: EnrollOptions
+
+    public struct Render: Decodable, Equatable {
+        public let type: String
+        public let hint: Hint?
+        public let notification: Notification?
+
+        public struct Hint: Decodable, Equatable {
+            public let variant: String?
+        }
+        
+        public struct Notification: Decodable, Equatable {
+            public let cancelled: String?
+        }
+    }
+    
+    public struct EnrollOptions: Decodable, Equatable {
+        public let rp: Rp
+        public let user: User
+        public let challenge: String
+        public let pubKeyCredParams: [PubKeyCredParam]
+        public let excludeCredentials: [ExcludeCredential]
+        public let authenticatorSelection: AuthenticatorSelection
+        public let attestation: String
+        
+        public struct Rp: Decodable, Equatable {
+            public let id: String
+            public let name: String
+        }
+        
+        public struct User: Decodable, Equatable {
+            public let id: String
+            public let name: String
+            public let displayName: String
+        }
+        
+        public struct PubKeyCredParam: Decodable, Equatable {
+            public let type: String
+            public let alg: Int
+        }
+            
+        public struct AuthenticatorSelection: Decodable, Equatable {
+            public let authenticatorAttachment: String
+            public let requireResidentKey: Bool
+            public let residentKey: String
+            public let userVerification: String
+        }
+        
+        public struct ExcludeCredential: Decodable, Equatable {
+            public let type: String
+            public let id: String
+            public let transports: [String]
+        }
+    }
+}
+
 public enum Widget {
     case form(FormWidget)
     case submit(SubmitWidget)
@@ -193,6 +392,10 @@ public enum Widget {
     case passcode(PasscodeWidget)
     case phone(PhoneWidget)
     case date(DateWidget)
+    case passkeyLogin(PasskeyLoginWidget)
+    case passkeyEnroll(PasskeyEnrollWidget)
+    case webauthnLogin(WebauthnLoginWidget)
+    case webauthnEnroll(WebauthnEnrollWidget)
 }
 
 extension Widget: Decodable, Equatable {
@@ -227,6 +430,14 @@ extension Widget: Decodable, Equatable {
             self = try .phone(PhoneWidget(from: decoder))
         case "date":
             self = try .date(DateWidget(from: decoder))
+        case "passkeyLogin":
+            self = try .passkeyLogin(PasskeyLoginWidget(from: decoder))
+        case "passkeyEnroll":
+            self = try .passkeyEnroll(PasskeyEnrollWidget(from: decoder))
+        case "webauthnLogin":
+            self = try .webauthnLogin(WebauthnLoginWidget(from: decoder))
+        case "webauthnEnroll":
+            self = try .webauthnEnroll(WebauthnEnrollWidget(from: decoder))
         default:
             throw ParsingError.widget(type: type)
         }
@@ -258,6 +469,14 @@ public extension Widget {
             widget.id
         case let .date(widget):
             widget.id
+        case let .passkeyLogin(widget):
+            widget.id
+        case let .passkeyEnroll(widget):
+            widget.id
+        case let .webauthnLogin(widget):
+            widget.id
+        case let .webauthnEnroll(widget):
+            widget.id
         }
     }
 
@@ -285,6 +504,14 @@ public extension Widget {
             widget.value
         case let .date(widget):
             widget.value
+        case .passkeyLogin:
+            nil
+        case .passkeyEnroll:
+            nil
+        case .webauthnLogin:
+            nil
+        case .webauthnEnroll:
+            nil
         }
     }
 
@@ -304,7 +531,7 @@ public extension Widget {
             false
         case let .select(widget):
             widget.readonly
-        case let .multiselect(widget):
+        case .multiselect:
             false
         case .passcode:
             false
@@ -312,6 +539,14 @@ public extension Widget {
             widget.readonly
         case let .date(widget):
             widget.readonly
+        case .passkeyLogin:
+            false
+        case .passkeyEnroll:
+            false
+        case .webauthnLogin:
+            false
+        case .webauthnEnroll:
+            false
         }
     }
 }
